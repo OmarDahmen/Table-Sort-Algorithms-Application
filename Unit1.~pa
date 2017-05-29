@@ -1,0 +1,173 @@
+//Exemple de tri rapide écrit par D. MORTREUIL le 04/11/00
+
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, Buttons;
+
+type
+  TForm1 = class(TForm)
+    Memo1: TMemo;
+    Label1: TLabel;
+    Memo2: TMemo;
+    Label2: TLabel;
+    Edit1: TEdit;
+    Label3: TLabel;
+    SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    procedure Edit1KeyPress(Sender: TObject; var Key: Char);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure TriBulleCroissant (Sender: TObject);
+    procedure TriBulleDecroissant (Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
+    Procedure RemplissageAleatoire (sender: Tobject);
+    procedure RemplissageMemo2 (Sender: Tobject);
+    procedure Edit1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+  private
+    { Déclarations privées}
+  public
+    { Déclarations publiques}
+  end;
+
+var
+  Form1: TForm1;
+  tab : array of real;
+
+implementation
+
+{$R *.DFM}
+
+// Procédure de limitation des caractères saisis dans Edit1
+procedure TForm1.Edit1KeyPress(Sender: TObject; var Key: Char);
+begin
+  If not(key in ['1','2','3','4','5','6','7','8','9','0']) then
+    key := #0;
+end;
+
+//procédure de tri bulle en respectant un ordre croissant
+procedure TForm1.TriBulleCroissant (Sender: TObject);
+
+var
+lower, upper, last, encours : integer;
+temp : variant;
+
+
+begin
+  lower := low(tab);
+  upper := high(tab);
+
+  for last := upper downto (lower+1) do
+    begin
+      for encours := lower to (upper-1) do
+        begin
+          if (tab[encours] > (tab[encours+1])) then
+            begin
+              temp := Tab[encours];
+              tab[encours] := tab[encours+1];
+              tab[encours+1] := temp;
+            end;
+        end;
+    end;
+end;
+
+// procédure de tri bulle en respectant un ordre décroissant
+procedure TForm1.TriBulleDecroissant (Sender: TObject);
+
+var
+lower, upper, last, encours : integer;
+temp : variant;
+
+
+begin
+  lower := low(tab);
+  upper := high(tab);
+
+  for last := upper downto (lower+1) do
+    begin
+      for encours := lower to (upper-1) do
+        begin
+          if (tab[encours] < (tab[encours+1])) then
+            begin
+              temp := Tab[encours];
+              tab[encours] := tab[encours+1];
+              tab[encours+1] := temp;
+            end;
+        end;
+    end;
+end;
+
+// procédure de remplissage aléatoire du tableau et de documentation de memo1
+Procedure TForm1.RemplissageAleatoire (sender: Tobject);
+
+var
+  i : integer;
+
+begin
+  randomize;
+
+  // Nettoyage des 2 memos
+  Memo1.lines.clear;
+  Memo2.lines.clear;
+  Memo1.visible:=false;
+  Memo2.visible:=false;
+
+  // allocation de la taille du tableau
+  setlength (tab, strtoint(edit1.text));
+
+  // Remplissage aléatoire de mémo1 avec des réels
+  for i := 0 to (strtoint (Edit1.text)-1) do
+    begin
+      tab[i]:= random*1000;
+      memo1.lines.add (floattostr(tab[i]));
+    end;
+
+end;
+
+// Procédure de remplissage de memo2 (remplissage qui s'effectue aprés le tri)
+procedure TForm1.RemplissageMemo2 (Sender: Tobject);
+
+var
+  i : integer;
+
+begin
+  for i := 0 to (strtoint (Edit1.text)-1) do
+    begin
+      memo2.lines.add (floattostr(tab[i]));
+    end;
+end;
+
+// Procédure d'activation du bouton1 (Tri croissant)
+procedure TForm1.SpeedButton1Click(Sender: TObject);
+begin
+  Form1.RemplissageAleatoire (Sender);
+  Form1.TriBulleCroissant (Sender);
+  Form1.RemplissageMemo2 (sender);
+  Memo1.visible:=True;
+  Memo2.visible:=True;
+end;
+
+// Procédure d'activation du bouton2 (Tri décroissant)
+procedure TForm1.SpeedButton2Click(Sender: TObject);
+begin
+  Form1.RemplissageAleatoire (Sender);
+  Form1.TriBulleDecroissant (Sender);
+  Form1.RemplissageMemo2 (sender);
+  Memo1.visible:=True;
+  Memo2.visible:=True;
+end;
+
+// Procédure de gestion de l'événement KeyDown de Edit1
+procedure TForm1.Edit1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (key = VK_BACK) then
+    begin
+      edit1.text:=copy (Edit1.text,0,length(Edit1.text)-1);
+    end;
+end;
+
+end.
