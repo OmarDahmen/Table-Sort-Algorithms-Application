@@ -3,4 +3,4 @@ This is a mini-project for the course of "Algorithmic &amp; Complexity" at the F
 Used sort algorithms : 
 - Bubble sort
 - Insertion sort
-- Selection sort.
+- Selection sort
